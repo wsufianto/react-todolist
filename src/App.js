@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from './Components/Home/Home';
+import Navbar from './Components/Navbar/Navbar';
+import News from './Components/News/News';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import User from './Components/User/User';
+import NotFound from './Components/NotFound/NotFound';
+import Footer from './Components/Footer/Footer';
+import UserNews from './Components/User/UserNews';
+import Auth from './Components/Auth/Auth';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="container max-w-full h-screen overflow-auto bg-blue-600">
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/news/:region" component={News} />
+          <Route exact path="/login" component={Auth} />
+          <Route path="/user/:id" component={UserNews} />
+          <Route path="*" component={NotFound} />
+        </Switch>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
