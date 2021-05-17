@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useFetch from '../../Helpers/useFetch'
 import NewsList from '../NewsItem/NewsList'
-import axios from 'axios'
+import * as api from '../../api/index'
+import { useParams, Redirect } from 'react-router-dom'
 
 const UserNews = () => {
 
-  const url = 'http://localhost:5000/news/'
   const buttonLabel = (
     <svg
       className="w-6 h-6 text-blue-400"
@@ -21,35 +21,31 @@ const UserNews = () => {
     </svg>
   )
 
+  let { userId } = useParams()
+
+  const [user] = useState(JSON.parse(localStorage.getItem('user')))
+  const url = `http://localhost:5000/news/${userId}`
   const { data, setData, isLoading, errMessage } = useFetch(url)
+  const username = `${user.result.firstName} ${user.result.lastName}`
 
-  console.log(data)
+  const handleDelete = (title) => {
 
-  const toFind = "Peter Parker"
-  const toShow = data.filter(item => item.username === toFind)
+    const toDelete = data.filter(item => item.title === title)
 
-  const handleDelete = (id) => {
-
-    // const toDelete = data.filter(item => item.title === id)
-
-    // console.log(toDelete[0]._id)
-
-    // axios.delete('http://localhost:5000/news/:id', toDelete[0]._id)
-    //   .then(res => console.log(res.data))
-
-    const articles = data.filter(item => item.title !== id)
+    api.deleteNews(toDelete[0]._id)
+    console.log("News Deleted!")
+    const articles = data.filter(item => item.title !== title)
     setData(articles)
   }
-
-  console.log(toShow)
 
   return (
     <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto my-10 bg-gray-100">
       <div className="flex justify-center items-center">
-        <h1 className="text-3xl py-3 px-3 text-blue-600"> {toFind}'s News </h1>
+        <h1 className="text-3xl py-3 px-3 text-blue-600"> Saved News </h1>
       </div>
-      {toShow.length === 0 ? <div className="text-red-500 py-5">No News Found</div> :
-        <NewsList items={toShow} title={`${toFind}'s News`} isLoading={isLoading} errMessage={errMessage} handleClick={handleDelete} label={buttonLabel} />}
+      {userId !== user.result._id ? <Redirect to="/*" /> :
+      data.length === 0 ? <div className="text-red-500 py-5">No News Found</div> :
+        <NewsList items={data} title={`${username}'s News`} isLoading={isLoading} errMessage={errMessage} handleClick={handleDelete} label={buttonLabel} />}
       {(errMessage !== '') && <div className="text-red-500">{errMessage} </div>}
       {isLoading && <div> Loading ... </div>}
     </div>

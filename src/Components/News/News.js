@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useFetch from '../../Helpers/useFetch';
 import NewsList from '../NewsItem/NewsList'
-import { useParams } from 'react-router-dom'
+import { useParams, Redirect } from 'react-router-dom'
 import { country } from '../../Helpers/CountryCode'
-import axios from 'axios'
+import * as api from '../../api/index'
+
 require('dotenv').config();
 
 const News = () => {
 
   let { region } = useParams()
+
+  const validRegion = Object.keys(country).includes(region)
 
   const url = `https://newsapi.org/v2/top-headlines?country=${region}&apiKey=${process.env.REACT_APP_API_KEY}`
 
@@ -28,15 +31,14 @@ const News = () => {
   )
 
   const { data, setData, isLoading, errMessage } = useFetch(url)
-
-  console.log(data)
+  const [user] = useState(JSON.parse(localStorage.getItem('user')))
+  const [errText, setErrText] = useState('')
 
   const handleSave = (id) => {
-    console.log("Saved to Db")
     const selectedNews = data.articles.filter(item => item.title === id)
-
+    
     const saveNews = {
-      username: "Peter Parker",
+      userId: user.result._id,
       title: selectedNews[0].title,
       description: selectedNews[0].description, 
       author: selectedNews[0].author || '',
@@ -45,21 +47,32 @@ const News = () => {
       publishedAt: selectedNews[0].publishedAt, 
       source: selectedNews[0].source.name
     }
-
-    console.log(saveNews)
-
-    axios.post('http://localhost:5000/news/add', saveNews)
-      .then(res => console.log(res.data))
+    
+    api.addNews(saveNews)
+      .then(response => {
+        console.log(response.data)
+        if(response.data.code === 409) {
+          setErrText(prevStatus => response.data.msg)
+        } else if(response.data.code === 200) {
+          setErrText(prevStatus => response.data.msg)
+        } else {
+          setErrText(prevStatus => "Unknown Error")
+        }
+      }) 
 
     const articles = data.articles.filter(item => item.title !== id)
-    console.log(articles)
     setData({articles})
   }
 
   const handleRefresh = () => {
     console.log("refreshing")
+    setErrText(prevText => '')
     window.location.reload(false)
   }
+
+  if (!validRegion) {
+    return <Redirect to="/*" />
+  }  
 
   return (
     <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto my-10 bg-gray-100">
@@ -67,8 +80,12 @@ const News = () => {
         <h1 className="text-3xl py-3 px-3 text-blue-600"> Latest News </h1> 
         <button className="p-2 bg-blue-500 text-white rounded-lg border-2 shadow-md" onClick={handleRefresh}>Refresh</button>
       </div>
-      <NewsList items={data.articles} title={`${country[region]} News`} handleClick={handleSave} isLoading={isLoading} errMessage={errMessage} label={buttonLabel} />
+      <div className="text-red-600">
+        { errText !== '' && <p>{errText}</p>}
+      </div>
+      <NewsList items={data.articles} title={`${country[region]} News`} handleClick={handleSave} isLoading={isLoading} errMessage={errMessage} label={buttonLabel} style={!user?.token ? "invisible" : "visible"} />
     </div>
+    
   )
 }
 

@@ -1,67 +1,67 @@
 const router = require('express').Router()
 let News = require('../models/news.model')
+const auth = require('../middleware/auth.js')
 
-router.route('/').get((req, res) => {
-  News.find()
-    .then(newsList => res.json(newsList))
-    .catch(err => res.status(400).json('Error: ' + err))
+router.get('/', async (req, res) => {
+  try {
+    const response = await News.find()
+    return res.json(response)
+  } catch (err) {
+    res.send({ code: 400, msg: err.message });
+  }
 })
 
-router.route('/add').post((req, res) => {
-  const username = req.body.username
-  const title = req.body.title
-  const description = req.body.description
-  const author = req.body.author
-  const url = req.body.url
-  const urlToImage = req.body.urlToImage
-  const publishedAt = Date.parse(req.body.publishedAt)
-  const source = req.body.source
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params
 
-  const newNews = new News({
-    username,
-    title,
-    description,
-    author,
-    url,
-    urlToImage,
-    publishedAt,
-    source
-  })
-
-  newNews.save()
-    .then(() => res.json('News Added!'))
-    .catch(err => res.status(400).json('Error: ' + err))
+  try {
+    const response = await News.find({ userId }).sort('-createdAt')
+    return res.json(response)
+  } catch (err) {
+    res.send({ code: 400, msg: err.message })
+  }
 })
 
-router.route('/:id').get((req, res) => {
-  News.findById(req.params.id)
-    .then(newsPost => res.json(newsPost))
-    .catch(err => res.status(400).json('Error: ' + err))
-})
+router.post('/save', auth, async (req, res) => {
 
-router.route('/:id').delete((req, res) => {
-  News.findByIdAndDelete(req.params.id)
-    .then(() => res.json('News Deleted'))
-    .catch(err => res.status(400).json('Error: ' + err))
-})
+  const { userId, title, description, author, url, urlToImage, publishedAt, source } = req.body
 
-router.route('/update/:id').post((req, res) => {
-  News.findById(req.params.id)
-    .then(newsPost => {
-      newsPost.username = req.body.username
-      newsPost.title = req.body.title
-      newsPost.description = req.body.description
-      newsPost.author = req.body.author
-      newsPost.url = req.body.url
-      newsPost.urlToImage = req.body.urlToImage
-      newsPost.publishedAt = Date.parse(req.body.publishedAt)
-      newsPost.source = req.body.source
-      
-      newsPost.save()
-        .then(() => res.json('News Updated!'))
-        .catch(err => res.status(400).json('Error: '))
+  try {
+    const existingNews = await News.find({ title, userId })
+
+    if (existingNews.length !== 0) {
+      return res.send({ code: 409, msg: "News Exists!" })
+    }
+
+    const newNews = new News({
+      userId,
+      title,
+      description,
+      author,
+      url,
+      urlToImage,
+      publishedAt,
+      source
     })
-    .catch(err => res.status(400).json('Error: '))
+
+    await newNews.save()
+    return res.send({ code: 200, msg: "News Saved!" })
+
+  } catch (err) {
+    res.send({ code: 500, msg: err.message })
+  }
+})
+
+router.delete('/delete/:id', auth, async (req, res) => {
+
+  const { id } = req.params
+
+  try {
+    await News.findByIdAndDelete(id)
+    return res.send({ code: 200, msg: "News Deleted!"})
+  } catch (err) {
+    res.send({ code: 400, msg: err.message })
+  }
 })
 
 module.exports = router

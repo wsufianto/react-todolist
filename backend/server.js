@@ -22,11 +22,11 @@ connection.once('open', () => {
 // import the route and call app.use on it
 const newsRouter = require('./routes/news')
 const usersRouter = require('./routes/users')
-// const authRouter = require('./routes/auth')
+const contactRouter = require('./routes/contact')
 
 app.use('/news', newsRouter)
 app.use('/users', usersRouter)
-// app.use('/api', authRouter)
+app.use(contactRouter)
 // -------------------------
 
 // starts the server
