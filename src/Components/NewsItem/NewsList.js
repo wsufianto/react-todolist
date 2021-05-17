@@ -1,6 +1,6 @@
 import React from 'react'
 
-const NewsList = ({ items, title, handleClick, isLoading, errMessage, label }) => {
+const NewsList = ({ items, title, handleClick, isLoading, errMessage, label, style }) => {
   
   return (
     <div className="w-11/12 mx-auto py-5">
@@ -17,7 +17,7 @@ const NewsList = ({ items, title, handleClick, isLoading, errMessage, label }) =
             </div>
             {item.urlToImage && <img className="w-48 h-auto" src={item.urlToImage}alt="x" />}
             <div>
-              <button onClick={() => handleClick(item.title)} >{label}
+              <button onClick={() => handleClick(item.title)} className={style} >{label}
               </button>
             </div>
           </div>
