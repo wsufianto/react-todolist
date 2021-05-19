@@ -24,6 +24,7 @@ const Contact = () => {
         setFormData({ name: '', email: '', message: '', status: "Submit" });
       } else if (response.data.code === 400) {
         alert("Message Failed");
+        setFormData({ ...formData, status: "Submit"})
       }
     })
   }

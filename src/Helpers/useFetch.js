@@ -27,10 +27,10 @@ const useFetch = (urlLink) => {
       } 
     }
     getNews()
-    console.log("Use Effect in use!")
+    // console.log("Use Effect in use!")
 
     return () => {
-      console.log("Cleanup")
+      // console.log("Cleanup")
       source.cancel()
     }  
   }, [urlLink])
