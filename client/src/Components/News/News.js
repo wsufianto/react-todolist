@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import useFetch from '../../Helpers/useFetch';
+import React, { useState, useEffect } from 'react'
 import NewsList from '../NewsItem/NewsList'
 import { useParams, Redirect } from 'react-router-dom'
 import { country } from '../../Helpers/CountryCode'
+import axios from 'axios'
 import * as api from '../../api/index'
-
 require('dotenv').config();
 
 const News = () => {
@@ -12,8 +11,6 @@ const News = () => {
   let { region } = useParams()
 
   const validRegion = Object.keys(country).includes(region)
-
-  const url = `https://newsapi.org/v2/top-headlines?country=${region}&apiKey=${process.env.REACT_APP_API_KEY}`
 
   const buttonLabel = (
     <svg
@@ -30,7 +27,35 @@ const News = () => {
     </svg>
   )
 
-  const { data, setData, isLoading, errMessage } = useFetch(url)
+  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errMessage, setErrMessage] = useState('')
+
+  useEffect(() => {
+      const source = axios.CancelToken.source();
+
+      api.fetchNews(region, source)
+        .then(response => { 
+          console.log("fetching news")
+          console.log(response.data.articles)
+          setData(prevData => response.data)
+          setIsLoading(false)
+          setErrMessage('')
+        })
+        .catch(err => {
+          if (axios.isCancel(err)) {
+            console.log('fetch cancelled!')
+          } else {
+            setIsLoading(false)
+            setErrMessage(err.message)
+          }
+        })
+
+        return () => {
+          source.cancel()
+        }    
+  }, [region])
+
   const [user] = useState(JSON.parse(localStorage.getItem('user')))
   const [errText, setErrText] = useState('')
 

@@ -14,6 +14,7 @@ const Auth = () => {
     password: '',
     cfmPassword: '',
   })
+  
   const [signedUp, setSignedUp] = useState(false)
   const { dispatch } = useContext(AuthContext)
   const history = useHistory()
@@ -83,8 +84,8 @@ const Auth = () => {
   }
 
   const { signIn } = useGoogleLogin({
-    onSuccess,
-    onFailure,
+    onSuccess: onSuccess,
+    onFailure: onFailure,
     clientId,
   })
 
