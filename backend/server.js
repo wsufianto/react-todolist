@@ -1,35 +1,39 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
-require('dotenv').config()
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-const app = express()
-const port = process.env.PORT || 5000
+const app = express();
+const port = process.env.PORT || 5000;
 
-app.use(cors()) // middleware
-app.use(express.json()) 
+app.use(cors()); // middleware
+app.use(express.json());
 
-// connect to mongodb 
-const uri = process.env.ATLAS_URI
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+// connect to mongodb
+const uri = process.env.ATLAS_URI;
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
-const connection = mongoose.connection
+const { connection } = mongoose;
 connection.once('open', () => {
-  console.log('MongoDB database connection established successfully')
-})
+  console.log('MongoDB database connection established successfully');
+});
 // -------------------------
 
 // import the route and call app.use on it
-const newsRouter = require('./routes/news')
-const usersRouter = require('./routes/users')
-const contactRouter = require('./routes/contact')
+const newsRouter = require('./routes/news');
+const usersRouter = require('./routes/users');
+const contactRouter = require('./routes/contact');
 
-app.use('/news', newsRouter)
-app.use('/users', usersRouter)
-app.use(contactRouter)
+app.use('/news', newsRouter);
+app.use('/users', usersRouter);
+app.use(contactRouter);
 // -------------------------
+
+app.get('/', (req, res) => {
+  res.send('App is running!');
+});
 
 // starts the server
 app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`)
-})
+  console.log(`Server is running on port: ${port}`);
+});

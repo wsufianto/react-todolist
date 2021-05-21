@@ -24,7 +24,8 @@ const UserNews = () => {
   let { userId } = useParams()
 
   const [user] = useState(JSON.parse(localStorage.getItem('user')))
-  const url = `http://localhost:5000/news/${userId}`
+  // const url = `https://newsappmern.netlify.app/news/${userId}`
+  const url = `http://localhost:5000/news/user/${userId}`
   const { data, setData, isLoading, errMessage } = useFetch(url)
   const username = `${user.result.firstName} ${user.result.lastName}`
 

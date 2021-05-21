@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API = axios.create({ baseURL: 'http://localhost:5000'})
+// const API = axios.create({ baseURL: 'https://newsappmern.herokuapp.com/'})
+const API = axios.create({ baseURL: 'http://localhost:5000/'})
+// export const source = axios.CancelToken.source();
 
 API.interceptors.request.use((req) => {
   if(localStorage.getItem('user')) {
@@ -10,7 +12,7 @@ API.interceptors.request.use((req) => {
 
 })
 
-export const fetchNews = () => API.get('/news');
+export const fetchNews = (region, source) => API.get(`/news/${region}`, { cancelToken: source.token});
 export const addNews = (newsItem) => API.post('/news/save', newsItem);
 export const deleteNews = (id) => API.delete(`/news/delete/${id}`);
 export const signIn = (formData) => API.post('/users/signin', formData);
