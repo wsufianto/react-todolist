@@ -79,7 +79,7 @@ const Auth = () => {
     }
   }
 
-  const onFailure = () => {
+  const onFailure = async () => {
     console.log("Google Sign In was unsuccessful. Try again later!")
   }
 

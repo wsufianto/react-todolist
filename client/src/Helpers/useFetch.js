@@ -27,7 +27,6 @@ const useFetch = (urlLink) => {
       } 
     }
     getNews()
-    // console.log("Use Effect in use!")
 
     return () => {
       // console.log("Cleanup")

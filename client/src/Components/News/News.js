@@ -36,8 +36,6 @@ const News = () => {
 
       api.fetchNews(region, source)
         .then(response => { 
-          console.log("fetching news")
-          console.log(response.data.articles)
           setData(prevData => response.data)
           setIsLoading(false)
           setErrMessage('')
@@ -75,7 +73,6 @@ const News = () => {
     
     api.addNews(saveNews)
       .then(response => {
-        console.log(response.data)
         if(response.data.code === 409) {
           setErrText(prevStatus => response.data.msg)
         } else if(response.data.code === 200) {

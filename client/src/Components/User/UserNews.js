@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import useFetch from '../../Helpers/useFetch'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import NewsList from '../NewsItem/NewsList'
 import * as api from '../../api/index'
 import { useParams, Redirect } from 'react-router-dom'
@@ -24,9 +24,33 @@ const UserNews = () => {
   let { userId } = useParams()
 
   const [user] = useState(JSON.parse(localStorage.getItem('user')))
-  // const url = `https://newsappmern.netlify.app/news/${userId}`
-  const url = `http://localhost:5000/news/user/${userId}`
-  const { data, setData, isLoading, errMessage } = useFetch(url)
+  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errMessage, setErrMessage] = useState('')
+
+  useEffect(() => {
+      const source = axios.CancelToken.source();
+
+      api.userNews(userId, source)
+        .then(response => { 
+          setData(prevData => response.data)
+          setIsLoading(false)
+          setErrMessage('')
+        })
+        .catch(err => {
+          if (axios.isCancel(err)) {
+            console.log('fetch cancelled!')
+          } else {
+            setIsLoading(false)
+            setErrMessage(err.message)
+          }
+        })
+
+        return () => {
+          source.cancel()
+        }    
+  }, [userId])
+
   const username = `${user.result.firstName} ${user.result.lastName}`
 
   const handleDelete = (title) => {
@@ -45,10 +69,9 @@ const UserNews = () => {
         <h1 className="text-3xl py-3 px-3 text-blue-600"> Saved News </h1>
       </div>
       {userId !== user.result._id ? <Redirect to="/*" /> :
-      data.length === 0 ? <div className="text-red-500 py-5">No News Found</div> :
+      data.length === 0 && !isLoading? <div className="text-red-500 py-5">No News Found</div> :
         <NewsList items={data} title={`${username}'s News`} isLoading={isLoading} errMessage={errMessage} handleClick={handleDelete} label={buttonLabel} />}
       {(errMessage !== '') && <div className="text-red-500">{errMessage} </div>}
-      {isLoading && <div> Loading ... </div>}
     </div>
   )
 }

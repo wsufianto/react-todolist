@@ -18,7 +18,7 @@ const Contact = () => {
     e.preventDefault();
     setFormData({ ...formData, status: "Sending"})
 
-    axios.post("http://localhost:5000/contact", formData).then((response) => {
+    axios.post("https://newsappmern.herokuapp.com/contact", formData).then((response) => {
       if (response.data.code === 200) {
         alert("Message Sent");
         setFormData({ name: '', email: '', message: '', status: "Submit" });
