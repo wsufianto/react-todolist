@@ -2,6 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+News App where user can view latest news from the world. Sign up as user and sign in with Google Login as well. 
+Save and delete news.
+API is using newsApi.org.
+Link : <https://newsappmern.netlify.app/>
+
 ## Available Scripts
 
 In the project directory, you can run:
