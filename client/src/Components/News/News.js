@@ -97,7 +97,7 @@ const News = () => {
   }  
 
   return (
-    <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto my-10 bg-gray-100">
+    <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto md:my-10 bg-gray-100">
       <div className="flex justify-center items-center">
         <h1 className="text-3xl py-3 px-3 text-blue-600"> Latest News </h1> 
         <button className="p-2 bg-blue-500 text-white rounded-lg border-2 shadow-md" onClick={handleRefresh}>Refresh</button>

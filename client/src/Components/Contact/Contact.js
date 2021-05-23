@@ -30,8 +30,8 @@ const Contact = () => {
   }
 
   return (
-    <div className="container items-center border-2 text-blue-600 font-bold mx-auto max-w-3xl px-20 py-10 mt-10 bg-gray-100 rounded-xl shadow-xl">
-      <h1 className="text-3xl text-center pb-5"> Contact </h1>
+    <div className="container items-center border-2 text-blue-600 font-bold mx-auto max-w-3xl px-3 sm:text-xl sm:px-20 py-10 mt-10 bg-gray-100 rounded-xl shadow-xl">
+      <h1 className="text-2xl sm:text-3xl text-center pb-5"> Contact </h1>
       <form id="contactForm" onSubmit={handleSubmit} className="flex flex-col">
 
         <label htmlFor="name" className="text-xl py-5">Name: </label>
