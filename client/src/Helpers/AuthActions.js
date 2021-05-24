@@ -11,7 +11,8 @@ export const signin = async ({dispatch, payload}) => {
     })
   } catch (err) {
     console.log("Something is wrong!")
-    alert(err.message)
+    if(err.message.includes("404")) return alert("User does not exists!")
+    if(err.message.includes("400")) return alert("Invalid Password")
   }
 }
 
