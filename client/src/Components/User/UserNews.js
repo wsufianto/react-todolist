@@ -24,10 +24,12 @@ const UserNews = () => {
   let { userId } = useParams()
 
   const [user] = useState(JSON.parse(localStorage.getItem('user')))
+
+  
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [errMessage, setErrMessage] = useState('')
-
+  
   useEffect(() => {
       const source = axios.CancelToken.source();
 
@@ -51,6 +53,10 @@ const UserNews = () => {
         }    
   }, [userId])
 
+  if (!user || user === null) {
+    return <Redirect to="/" />
+  }
+
   const username = `${user.result.firstName} ${user.result.lastName}`
 
   const handleDelete = (title) => {
@@ -64,7 +70,7 @@ const UserNews = () => {
   }
 
   return (
-    <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto my-10 bg-gray-100">
+    <div className="container bg-blue-100 rounded-lg max-w-7xl max-h-3/4 overflow-auto text-center mx-auto md:my-10 bg-gray-100">
       <div className="flex justify-center items-center">
         <h1 className="text-3xl py-3 px-3 text-blue-600"> Saved News </h1>
       </div>
