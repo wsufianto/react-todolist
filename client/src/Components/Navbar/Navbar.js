@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { AuthContext } from '../../App' // import authentication context
 import HomeIcon from '../../Icons/HomeIcon.js'
@@ -16,23 +16,23 @@ const Navbar = () => {
   const history = useHistory()
   const location = useLocation()
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch({ type: 'LOGOUT' })
     history.push("/")
     setUser(null)
-  }
+  },[dispatch, history, setUser])
+  
+  const token = user?.token
 
   useEffect(() => {
     
-    const token = user?.token
-
     if(token) {
       const decodedToken = decode(token)
       if (decodedToken.exp * 1000 < new Date().getTime()) handleLogout()
     }
 
     setUser(JSON.parse(localStorage.getItem('user')))
-  },[location])
+  },[location, token, handleLogout])
 
   return (
     <nav className="flex bg-blue-600 h-auto items-center justify-center md:justify-between md:px-5 text-white p-2">
