@@ -6,7 +6,7 @@ const auth = require('../middleware/auth.js');
 router.get('/:region', async (req, res) => {
   const { region } = req.params;
 
-  const url = `https://newsapi.org/v2/top-headlines/sources?country=${region}&apiKey=${process.env.API_KEY}`;
+  const url = `https://newsapi.org/v2/top-headlines?country=${region}&apiKey=${process.env.API_KEY}`;
 
   try {
     const response = await axios.get(url);
