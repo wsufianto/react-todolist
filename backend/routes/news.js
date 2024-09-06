@@ -6,7 +6,7 @@ const auth = require('../middleware/auth.js');
 router.get('/:region', async (req, res) => {
   const { region } = req.params;
 
-  const url = `https://newsapi.org/v2/top-headlines?country=${region}&apiKey=${process.env.API_KEY}`;
+  const url = `https://newsapi.org/v2/top-headlines/sources?country=${region}&apiKey=${process.env.API_KEY}`;
 
   try {
     const response = await axios.get(url);
@@ -29,7 +29,14 @@ router.get('/user/:userId', async (req, res) => {
 
 router.post('/save', auth, async (req, res) => {
   const {
-    userId, title, description, author, url, urlToImage, publishedAt, source,
+    userId,
+    title,
+    description,
+    author,
+    url,
+    urlToImage,
+    publishedAt,
+    source,
   } = req.body;
 
   try {
